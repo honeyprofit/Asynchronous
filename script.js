@@ -843,3 +843,15 @@ Promise.any([
   .then(res => console.log(res))
   .catch(err => console.error(err));
 */
+
+// 274. Consuming Promises with Async/Await
+const whereAmI2 = async function(country){
+  console.log('❤️poland test1');
+  const response = await fetch(`https://restcountries.com/v2/name/${country}`);
+  console.log(`❤️response:${response}`);
+}
+
+console.log('❤️poland test2');
+
+whereAmI2('poland');
+console.log('❤️First----');
