@@ -22,6 +22,11 @@ const renderCountry = function (data, className = '') {
   countriesContainer.style.opacity = 1;
 };
 
+const renderError = function (msg) {
+  countriesContainer.insertAdjacentText('beforeend', msg);
+  countriesContainer.style.opacity = 1;
+};
+
 const getPosition = function () {
   return new Promise(function (resolve, reject) {
     navigator.geolocation.getCurrentPosition(resolve, reject);
@@ -29,29 +34,48 @@ const getPosition = function () {
 };
 
 const whereIsHe = async function (country) {
-  // Geo location
-  const pos = await getPosition();
-  const { latitude: lat, longitude: lng } = pos.coords;
+  try {
+    // Geo location
+    const pos = await getPosition();
+    const { latitude: lat, longitude: lng } = pos.coords;
 
-  // Reverse geocoding
-  const resGeo = await fetch(
-    `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`
-  );
-  const dataGeo = await resGeo.json();
-  console.log(dataGeo);
+    // Reverse geocoding
+    const resGeo = await fetch(
+      `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`
+    );
+    if (!resGeo.ok) throw new Error(`Problem getting location data`);
 
-  //   Country data
-  //   fetch(`https://restcountries.com/v2/name/${country}`).then(res =>
-  //     console.log(res)
-  //   );
+    const dataGeo = await resGeo.json();
+    console.log(dataGeo);
 
-  const res = await fetch(
-    `https://restcountries.com/v2/name/${dataGeo.countryCode}`
-  );
-  const data = await res.json();
-  console.log(data);
-  renderCountry(data[0]);
+    //   Country data
+    //   fetch(`https://restcountries.com/v2/name/${country}`).then(res =>
+    //     console.log(res)
+    //   );
+
+    const res = await fetch(
+      `https://restcountries.com/v2/name/${dataGeo.countryCode}`
+    );
+    if (!res.ok) throw new Error(`Problem getting country code`);
+
+    const data = await res.json();
+    console.log(data);
+    renderCountry(data[0]);
+  } catch (error) {
+    console.error(`${error}..😫`);
+    renderError(`Render error..🙁 ${error.message}`);
+  }
 };
 
 whereIsHe();
 console.log('HE IS HERE FIRST');
+
+//try-catch to handle real error
+// try {
+//   let y = 1;
+//   const x = 2;
+//   x = 3;
+// } catch (error) {
+//   alert(error.message);
+//   console.log(error);
+// }
