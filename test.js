@@ -49,10 +49,10 @@ const whereIsHe = async function (country) {
     console.log(dataGeo);
 
     //   Country data
+
     //   fetch(`https://restcountries.com/v2/name/${country}`).then(res =>
     //     console.log(res)
     //   );
-
     const res = await fetch(
       `https://restcountries.com/v2/name/${dataGeo.countryCode}`
     );
@@ -61,14 +61,34 @@ const whereIsHe = async function (country) {
     const data = await res.json();
     console.log(data);
     renderCountry(data[0]);
+    return `You are in ${dataGeo.city}, ${dataGeo.countryName}`;
   } catch (error) {
     console.error(`${error}..😫`);
     renderError(`Render error..🙁 ${error.message}`);
+
+    //Reject promise returned from async function
+    throw error;
   }
 };
 
-whereIsHe();
-console.log('HE IS HERE FIRST');
+console.log('1:HE IS HERE FIRST');
+// const city = whereIsHe();
+// console.log(city);
+
+// whereIsHe()
+//   .then(city => console.log(`2: ${city}`))
+//   .catch(error => console.error(`2: ${error.message}😫!!`))
+//   .finally(() => console.log('3: HE IS HERE finally'));
+
+(async function () {
+  try {
+    const city = await whereIsHe();
+    console.log(`2: ${city}`);
+  } catch (error) {
+    console.error(`2: ${error.message}😫!!`);
+  }
+  console.log('3: HE IS HERE finally');
+})();
 
 //try-catch to handle real error
 // try {
