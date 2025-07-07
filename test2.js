@@ -59,5 +59,26 @@ Promise.race([getJSON(`https://restcountries.com/v2/name/hungary`), timeout(1)])
   .then(res => console.log(res[0]))
   .catch(err => console.error(err));
 
+// Promise.allSettled
+Promise.allSettled([
+  Promise.resolve('Success'),
+  Promise.reject('ERROR'),
+  Promise.resolve('Another success'),
+]).then(res => console.log(res));
 
-  // Promise.allSettled
+Promise.all([
+  Promise.resolve('Success'),
+  Promise.reject('ERROR'),
+  Promise.resolve('Another success'),
+])
+  .then(res => console.log(res))
+  .catch(err => console.log(err));
+
+// Promise.any [ES2021]
+Promise.any([
+  Promise.resolve('Success'),
+  Promise.reject('ERROR'),
+  Promise.resolve('Another success'),
+])
+  .then(res => console.log(res))
+  .catch(err => console.log(err));
